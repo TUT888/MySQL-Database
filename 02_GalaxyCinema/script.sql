@@ -6,31 +6,32 @@ USE GalaxyCinema;
 -- 1. TABLE CREATION
 CREATE TABLE film (
 	id CHAR(5),
-    film_name VARCHAR(50),
-    length_min INTEGER,
-    genre VARCHAR(25),
-    country CHAR(2),
-    PRIMARY KEY(id)
+    film_name VARCHAR(50) NOT NULL,
+    length_min INTEGER NOT NULL,
+    genre VARCHAR(25) NOT NULL,
+    country CHAR(2) NOT NULL,
+    PRIMARY KEY (id),
+    CHECK (length_min >=0)
 );
 
 CREATE TABLE room (
 	id CHAR(4),
-    room_name VARCHAR(20),
+    room_name VARCHAR(20) NOT NULL,
     PRIMARY KEY(id)
 );
 
 CREATE TABLE customer (
 	id CHAR(4),
-    customer_name VARCHAR(50),
+    customer_name VARCHAR(50) NOT NULL,
     phone CHAR(10),
     PRIMARY KEY(id)
 );
 
-CREATE TABLE screening (booking
+CREATE TABLE screening (
 	id CHAR(5),
-    film_id CHAR(5),
-    room_id CHAR(4),
-    start_time DATETIME,
+    film_id CHAR(5) NOT NULL,
+    room_id CHAR(4) NOT NULL,
+    start_time DATETIME NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT screening_film_id_fk FOREIGN KEY (film_id) REFERENCES film (id), 
     CONSTRAINT screening_room_id_fk FOREIGN KEY (room_id) REFERENCES room (id)
@@ -38,10 +39,10 @@ CREATE TABLE screening (booking
 
 CREATE TABLE booking (
 	id CHAR(4),
-    customer_id CHAR(4),
-    screening_id CHAR(5),
-    booking_time DATETIME,
-    total INTEGER,
+    customer_id CHAR(4) NOT NULL,
+    screening_id CHAR(5) NOT NULL,
+    booking_time DATETIME NOT NULL,
+    total INTEGER NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT booking_customer_id_fk FOREIGN KEY (customer_id) REFERENCES customer (id), 
     CONSTRAINT booking_screening_id_fk FOREIGN KEY (screening_id) REFERENCES screening (id)
@@ -49,23 +50,26 @@ CREATE TABLE booking (
 
 CREATE TABLE seat (
 	id CHAR(4),
-    room_id CHAR(4),
-    row_char CHAR(1),
-    col_number INTEGER,
-    x INTEGER,
-    y INTEGER,
+    room_id CHAR(4) NOT NULL,
+    row_char CHAR(1) NOT NULL,
+    col_number INTEGER NOT NULL,
+    x INTEGER NOT NULL,
+    y INTEGER NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT seat_room_id_fk FOREIGN KEY (room_id) REFERENCES room (id)
+    CONSTRAINT seat_room_id_fk FOREIGN KEY (room_id) REFERENCES room (id),
+    CONSTRAINT seat_unique1 UNIQUE(room_id, row_char, col_number),
+    CONSTRAINT seat_unique2 UNIQUE(room_id, x, y)
 );
 
 CREATE TABLE reserved_seat (
 	id CHAR(5),
-    booking_id CHAR(4),
-    seat_id CHAR(4),
-    price INTEGER,
+    booking_id CHAR(4) NOT NULL,
+    seat_id CHAR(4) NOT NULL,
+    price INTEGER NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT reserved_seat_booking_id_fk FOREIGN KEY (booking_id) REFERENCES booking (id),
-    CONSTRAINT reserved_seat_seat_id_fk FOREIGN KEY (seat_id) REFERENCES seat (id)
+    CONSTRAINT reserved_seat_seat_id_fk FOREIGN KEY (seat_id) REFERENCES seat (id),
+    CONSTRAINT reserved_seat_unique1 UNIQUE(booking_id, seat_id)
 );
 
 -- 2. DATA INSERTION
