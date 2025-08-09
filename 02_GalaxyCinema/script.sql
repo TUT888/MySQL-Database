@@ -11,7 +11,7 @@ CREATE TABLE film (
     genre VARCHAR(25) NOT NULL,
     country CHAR(2) NOT NULL,
     PRIMARY KEY (id),
-    CHECK (length_min >=0)
+    CONSTRAINT ck_film_length_min CHECK (length_min >=0)
 );
 
 CREATE TABLE room (
@@ -33,8 +33,8 @@ CREATE TABLE screening (
     room_id CHAR(4) NOT NULL,
     start_time DATETIME NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT screening_film_id_fk FOREIGN KEY (film_id) REFERENCES film (id), 
-    CONSTRAINT screening_room_id_fk FOREIGN KEY (room_id) REFERENCES room (id)
+    CONSTRAINT fk_screening_film_id FOREIGN KEY (film_id) REFERENCES film (id), 
+    CONSTRAINT fk_screening_room_id FOREIGN KEY (room_id) REFERENCES room (id)
 );
 
 CREATE TABLE booking (
@@ -44,8 +44,8 @@ CREATE TABLE booking (
     booking_time DATETIME NOT NULL,
     total INTEGER NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT booking_customer_id_fk FOREIGN KEY (customer_id) REFERENCES customer (id), 
-    CONSTRAINT booking_screening_id_fk FOREIGN KEY (screening_id) REFERENCES screening (id)
+    CONSTRAINT fk_booking_customer_id FOREIGN KEY (customer_id) REFERENCES customer (id), 
+    CONSTRAINT fk_booking_screening_id FOREIGN KEY (screening_id) REFERENCES screening (id)
 );
 
 CREATE TABLE seat (
@@ -56,9 +56,9 @@ CREATE TABLE seat (
     x INTEGER NOT NULL,
     y INTEGER NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT seat_room_id_fk FOREIGN KEY (room_id) REFERENCES room (id),
-    CONSTRAINT seat_unique1 UNIQUE(room_id, row_char, col_number),
-    CONSTRAINT seat_unique2 UNIQUE(room_id, x, y)
+    CONSTRAINT fk_seat_room_id FOREIGN KEY (room_id) REFERENCES room (id),
+    CONSTRAINT uq1_seat UNIQUE(room_id, row_char, col_number),
+    CONSTRAINT uq2_seat UNIQUE(room_id, x, y)
 );
 
 CREATE TABLE reserved_seat (
@@ -67,9 +67,9 @@ CREATE TABLE reserved_seat (
     seat_id CHAR(4) NOT NULL,
     price INTEGER NOT NULL,
     PRIMARY KEY(id),
-    CONSTRAINT reserved_seat_booking_id_fk FOREIGN KEY (booking_id) REFERENCES booking (id),
-    CONSTRAINT reserved_seat_seat_id_fk FOREIGN KEY (seat_id) REFERENCES seat (id),
-    CONSTRAINT reserved_seat_unique1 UNIQUE(booking_id, seat_id)
+    CONSTRAINT fk_reserved_seat_booking_id FOREIGN KEY (booking_id) REFERENCES booking (id),
+    CONSTRAINT fk_reserved_seat_seat_id FOREIGN KEY (seat_id) REFERENCES seat (id),
+    CONSTRAINT uq1_reserved_seat UNIQUE(booking_id, seat_id)
 );
 
 -- 2. DATA INSERTION
