@@ -143,8 +143,38 @@ ON f.id = s.film_id
 GROUP BY film_id;
 
 -- 18. What film has showing time above and below average show time of all film
--- 19. what room have least number of seat?
+WITH count_tb AS (SELECT film_id, COUNT(start_time) AS show_count
+				FROM screening
+				GROUP BY film_id),
+	avg_tb AS (SELECT AVG(show_count) AS avg_show_count
+				FROM count_tb)
+SELECT f.*, ctb.show_count
+FROM count_tb AS ctb
+JOIN film AS f ON ctb.film_id = f.id
+JOIN avg_tb AS atb ON ctb.show_count > atb.avg_show_count;
+
+-- 19. What room have least number of seat?
+WITH count_tb AS (SELECT room_id, COUNT(id) AS count_seat
+					FROM seat
+					GROUP BY room_id),
+	min_tb AS (SELECT MIN(count_seat) AS min_seat
+				FROM count_tb)
+SELECT r.*, ctb.count_seat
+FROM count_tb AS ctb
+JOIN min_tb AS mtb ON ctb.count_seat = mtb.min_seat
+JOIN room AS r ON ctb.room_id = r.id;
+
 -- 20. what room have number of seat bigger than average number of seat of all rooms
+WITH count_tb AS (SELECT room_id, COUNT(id) AS count_seat
+					FROM seat
+					GROUP BY room_id),
+	min_tb AS (SELECT AVG(count_seat) AS avg_seat
+				FROM count_tb)
+SELECT r.*, ctb.count_seat
+FROM count_tb AS ctb
+JOIN min_tb AS mtb ON ctb.count_seat > mtb.avg_seat
+JOIN room AS r ON ctb.room_id = r.id;
+
 -- 21. Ngoai nhung seat mà Ong Dung booking duoc o booking id = 1 thi ong CÓ THỂ (CAN) booking duoc nhung seat nao khac khong?
 -- 22. Show Film with total screening and order by total screening. BUT ONLY SHOW DATA OF FILM WITH TOTAL SCREENING > 10
 -- 23. TOP 3 DAY OF WEEK based on total booking
