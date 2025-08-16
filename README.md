@@ -11,7 +11,7 @@ Each sub-directory includes:
 
 ## Contents
 For detail requirement for each database, please refer to corresponding directories.
-|  | Database | Directory |
-| - | - | - |
-| 1 | Coffee Shop | [01_GalaxyCinema](./01_CoffeeShop/) |
-| 2 | Galaxy Cinema | [02_GalaxyCinema](./02_GalaxyCinema/) |
+|  | Database | Scripts | Directory |
+| - | - | - | - |
+| 1 | Coffee Shop | db | [01_GalaxyCinema](./01_CoffeeShop/) |
+| 2 | Galaxy Cinema | db & query | [02_GalaxyCinema](./02_GalaxyCinema/) |
